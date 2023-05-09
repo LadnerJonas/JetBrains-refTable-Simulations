@@ -5,20 +5,20 @@ import org.openjdk.jol.info.GraphLayout;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
+  final static int HASHMAP_SIZE = 45_000, PAYLOAD_SIZE = 10_000;
   public static void main(String[] args) {
-    final int HASHMAP_SIZE = 45_000, PAYLOAD_SIZE = 10_000;
 
     ConcurrentHashMap<KeyClass, ValueClass> hashMap = new ConcurrentHashMap<>();
 
-    populate(hashMap, HASHMAP_SIZE, PAYLOAD_SIZE);
+    populate(hashMap);
 
     System.out.println(GraphLayout.parseInstance(hashMap).toFootprint());
     System.out.println("Total Size (B): "+ GraphLayout.parseInstance(hashMap).totalSize());
   }
 
-  private static void populate(ConcurrentHashMap<KeyClass, ValueClass> hashMap, int hashMapSize, int payloadSize) {
-    for (int i = 0; i < hashMapSize; i++) {
-      hashMap.putIfAbsent(new KeyClass(i), new ValueClass(i, payloadSize));
+  private static void populate(ConcurrentHashMap<KeyClass, ValueClass> hashMap) {
+    for (int i = 0; i < HASHMAP_SIZE; i++) {
+      hashMap.putIfAbsent(new KeyClass(i), new ValueClass(i, PAYLOAD_SIZE));
     }
   }
 }
