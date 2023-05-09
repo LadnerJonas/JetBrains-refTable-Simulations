@@ -6,19 +6,31 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
   final static int HASHMAP_SIZE = 45_000, PAYLOAD_SIZE = 10_000;
+
   public static void main(String[] args) {
+    ConcurrentHashMap<KeyClass, ValueClass> hashMapWithoutPayload = new ConcurrentHashMap<>();
 
-    ConcurrentHashMap<KeyClass, ValueClass> hashMap = new ConcurrentHashMap<>();
+    populate(hashMapWithoutPayload);
 
-    populate(hashMap);
+    System.out.println("HashMap Size with no additional Payload:");
+    System.out.println("Total Size (B): " + GraphLayout.parseInstance(hashMapWithoutPayload).totalSize());
 
-    System.out.println(GraphLayout.parseInstance(hashMap).toFootprint());
-    System.out.println("Total Size (B): "+ GraphLayout.parseInstance(hashMap).totalSize());
+
+    ConcurrentHashMap<KeyClass, ValueClass> hashMapWithPayload = new ConcurrentHashMap<>();
+
+    populateWithPayload(hashMapWithPayload, PAYLOAD_SIZE);
+
+    System.out.println("HashMap Size with additional Payload ("+PAYLOAD_SIZE+" Integers):");
+    System.out.println("Total Size (B): " + GraphLayout.parseInstance(hashMapWithPayload).totalSize());
   }
 
   private static void populate(ConcurrentHashMap<KeyClass, ValueClass> hashMap) {
+    populateWithPayload(hashMap, 0);
+  }
+
+  private static void populateWithPayload(ConcurrentHashMap<KeyClass, ValueClass> hashMap, int payloadSize) {
     for (int i = 0; i < HASHMAP_SIZE; i++) {
-      hashMap.putIfAbsent(new KeyClass(i), new ValueClass(i, PAYLOAD_SIZE));
+      hashMap.putIfAbsent(new KeyClass(i), new ValueClass(i, payloadSize));
     }
   }
 }
